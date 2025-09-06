@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<div class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
+        <form method="POST" action="{% url 'account_login' %}" class="space-y-4">
+            {% csrf_token %}
+            {% include 'snippets/form_error.html' %}
+            <div>
+                <label for="{{ form.login.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900">Email or Username</label>
+                {{ form.login }}
+            </div>
+            <div>
+                <label for="{{ form.password.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
+                {{ form.password }}
+            </div>
+            <div class="flex items-center">
+                {{ form.remember }}
+                <label for="{{ form.remember.id_for_label }}" class="ml-2 text-sm text-gray-900">Remember me</label>
+            </div>
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Sign In</button>
+        </form>
+        <div class="mt-4">
+            {% include 'snippets/social_login_btn.html' %}
+        </div>
+        <p class="mt-4 text-sm text-center text-gray-600">
+            Forgot your password? <a href="{% url 'account_reset_password' %}" class="text-blue-600 hover:underline">Reset it</a>.
+            <br>
+            Don't have an account? <a href="{% url 'account_signup' %}" class="text-blue-600 hover:underline">Sign up</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}

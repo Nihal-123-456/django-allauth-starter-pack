@@ -1,0 +1,12 @@
+{% if form.errors %}
+    <div class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert" data-error="form-errors">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+        {% if not form.non_field_errors %}
+            <p>Form submission failed. Please check the fields below for errors.</p>
+        {% endif %}
+    </div>
+{% endif %}

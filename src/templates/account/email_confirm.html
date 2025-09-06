@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Confirm Email Address{% endblock %}
+{% block body %}
+<div class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Confirm Email Address</h2>
+        {% if confirmation %}
+            <p class="text-sm text-gray-600 mb-4">
+                Please confirm that <strong>{{ confirmation.email_address.email }}</strong> is an email address for user {{ confirmation.email_address.user }}.
+            </p>
+            <form method="POST" action="{% url 'account_confirm_email' confirmation.key %}" class="space-y-4">
+                {% csrf_token %}
+                <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Confirm</button>
+            </form>
+        {% else %}
+            <p class="text-sm text-gray-600 mb-4">
+                This email confirmation link expired or is invalid. Please issue a new email confirmation request.
+            </p>
+            <a href="{% url 'account_email' %}" class="block w-full text-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Resend Confirmation Email</a>
+        {% endif %}
+        <p class="mt-4 text-sm text-center text-gray-600">
+            Back to <a href="{% url 'account_login' %}" class="text-blue-600 hover:underline">Sign in</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}
