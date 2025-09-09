@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool, default=False)
 
 ALLOWED_HOSTS = []
 
@@ -38,25 +39,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
+    'django.contrib.sites', # add this for decalaring sites for django allauth 
 
+    # django allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
+    # built in apps
     'user_auth',
+    'command',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware", # whitenoise middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware",
+    "allauth.account.middleware.AccountMiddleware", # allauth middleware
 ]
 
 ROOT_URLCONF = 'django_home.urls'
@@ -64,7 +69,7 @@ ROOT_URLCONF = 'django_home.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'], # django templates location
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,6 +83,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_home.wsgi.application'
 
+# whitenoise config for staticfiles
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -89,6 +100,18 @@ DATABASES = {
     }
 }
 
+# neon postgresql connection_string
+DATABASE_URL=config('DATABASE_URL')
+
+if DATABASE_URL:
+    # neon postgresql config
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_health_checks=True,
+            conn_max_age=config('CONN_MAX_AGE', cast=int, default=30)
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -125,6 +148,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_BASE_DIR = BASE_DIR / 'staticfiles'
+STATICFILES_VENDORS = STATICFILES_BASE_DIR / 'vendors'
+STATICFILES_DIRS = [
+    STATICFILES_BASE_DIR
+]
+STATIC_ROOT = BASE_DIR / 'local-cdn' # py manage.py collectstatic will collect the static files in this location
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -133,9 +162,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend', # django allauth backend
 ]
 
+# django allauth forms config
 ACCOUNT_FORMS = {
     'signup': 'user_auth.forms.CustomSignupForm',
     'login': 'user_auth.forms.CustomLoginForm',
@@ -149,12 +179,14 @@ SOCIALACCOUNT_FORMS = {
     'disconnect': 'user_auth.forms.CustomDisconnectForm',
 }
 
-SITE_ID = 1
-ACCOUNT_AUTHENTICATION_METHOD='username_email'
-ACCOUNT_EMAIL_REQUIRED=True
+# django allauth settings
+SITE_ID = 2 # site object id (django.contrib.sites) created inside django admin
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION ='mandatory' 
 LOGIN_REDIRECT_URL = '/'
 
+# email settings
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='')
 EMAIL_PORT = config('EMAIL_PORT', cast=int, default=587)

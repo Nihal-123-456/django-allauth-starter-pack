@@ -2,6 +2,8 @@ from django import forms
 from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, ResetPasswordKeyForm, AddEmailForm, SetPasswordForm, ChangePasswordForm
 from allauth.socialaccount.forms import DisconnectForm
 
+# updating all the default django allauth forms to add styling
+
 class CustomLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
