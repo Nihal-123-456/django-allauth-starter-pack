@@ -8,7 +8,7 @@ cd src
 pip install -r ../requirements.txt
 
 # Run custom command to download Flowbite files
-python manage.py download_flowbite
+python manage.py download_vendor
 
 # Collect static files for WhiteNoise
 python manage.py collectstatic --no-input
