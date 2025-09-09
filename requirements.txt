@@ -1,3 +1,6 @@
 django
 django-allauth[socialaccount]
 python-decouple
+psycopg[binary]
+dj-database-url
+whitenoise
