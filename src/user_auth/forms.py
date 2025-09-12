@@ -4,7 +4,9 @@ from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, Rese
 from allauth.socialaccount.forms import DisconnectForm
 from cloudinary.forms import CloudinaryFileField
 import cloudinary.uploader
+import logging
 
+logger = logging.getLogger(__name__)
 
 # updating all the default django allauth forms to add styling
 
@@ -131,6 +133,8 @@ class ProfileImageForm(forms.ModelForm):
 
         if not new_image and not remove:
             raise forms.ValidationError("Please provide an image or input.")
+        if new_image and remove:
+            raise forms.ValidationError("You cannot upload a new image and remove the current one at the same time.")
 
         return cleaned_data
 
@@ -138,9 +142,12 @@ class ProfileImageForm(forms.ModelForm):
         profile = super().save(commit=False)
 
         if self.data.get('image-clear'):
-            # removing imgae from cloudinary if the user chooses to remove their current image  
+            # removing imgae from cloudinary storage if the user chooses to remove their current image  
             if profile.image:
-                cloudinary.uploader.destroy(profile.image.public_id)
+                try:
+                    cloudinary.uploader.destroy(profile.image.public_id)
+                except Exception as e:
+                    logger.error(f"Cloudinary delete failed: {e}")
             profile.image = None
 
         if commit:
