@@ -4,9 +4,10 @@
             {% for error in form.non_field_errors %}
                 <p>{{ error }}</p>
             {% endfor %}
-        {% endif %}
-        {% if not form.non_field_errors %}
-            <p>Form submission failed. Please check the fields below for errors.</p>
+        {% else %}
+            {% for error in form.errors %}
+                <p>Please check the {{ error }} field for errors.</p>
+            {% endfor %}
         {% endif %}
     </div>
 {% endif %}

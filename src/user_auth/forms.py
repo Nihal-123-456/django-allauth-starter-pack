@@ -141,7 +141,7 @@ class ProfileImageForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super().save(commit=False)
 
-        if self.data.get('image-clear'):
+        if commit and self.data.get('image-clear'):
             # removing imgae from cloudinary storage if the user chooses to remove their current image  
             if profile.image:
                 try:
