@@ -108,23 +108,21 @@ class CustomDisconnectForm(DisconnectForm):
         })
 
 class ProfileImageForm(forms.ModelForm):
-    # overriding the default cloudinary field which shows the name of the previous file
-    image = CloudinaryFileField(
-        options={'widget': forms.FileInput},
-        required=False,
-        widget=forms.FileInput(attrs={
-            'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400',
-            'id': 'user_avatar',
-            'type': 'file',
-            'aria-describedby': 'user_avatar_help',
-            'accept': 'image/*'
-        })
-    )
 
     class Meta:
         model= Profile
         fields=['image']
-    
+        # here we are modifying the field widget to add styling and remove the default django "currently/clear" text while also keeping the upload options(display_name, tags e.t.c) of the cloudinary field
+        widgets = {
+            'image': forms.FileInput(attrs={
+                'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400',
+                'id': 'user_avatar',
+                'type': 'file',
+                'aria-describedby': 'user_avatar_help',
+                'accept': 'image/*'
+            })
+        }
+
     def clean(self):
         # self.data is a querydict that contains form data from all the inputs and fields inside the <form> element of the html file. Similarly self.files contain all the files. Whereas cleaned_data is a dictionary that contains only the validated data from the declared form fields.
         cleaned_data = super().clean()
