@@ -1,6 +1,10 @@
 from django import forms
+from .models import Profile
 from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, ResetPasswordKeyForm, AddEmailForm, SetPasswordForm, ChangePasswordForm
 from allauth.socialaccount.forms import DisconnectForm
+from cloudinary.forms import CloudinaryFileField
+import cloudinary.uploader
+
 
 # updating all the default django allauth forms to add styling
 
@@ -102,3 +106,45 @@ class CustomDisconnectForm(DisconnectForm):
         self.fields['account'].widget.attrs.update({
             'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
         })
+
+class ProfileImageForm(forms.ModelForm):
+    # overriding the default cloudinary field which shows the name of the previous file
+    image = CloudinaryFileField(
+        options={'widget': forms.FileInput},
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400',
+            'id': 'user_avatar',
+            'type': 'file',
+            'aria-describedby': 'user_avatar_help',
+            'accept': 'image/*'
+        })
+    )
+
+    class Meta:
+        model= Profile
+        fields=['image']
+    
+    def clean(self):
+        # self.data is a querydict that contains form data from all the inputs and fields inside the <form> element of the html file. Similarly self.files contain all the files. Whereas cleaned_data is a dictionary that contains only the validated data from the declared form fields.
+        cleaned_data = super().clean()
+        new_image = self.files.get("image")
+        remove = self.data.get("image-clear")
+
+        if not new_image and not remove:
+            raise forms.ValidationError("Please provide an image or input.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+
+        if self.data.get('image-clear'):
+            # removing imgae from cloudinary if the user chooses to remove their current image  
+            if profile.image:
+                cloudinary.uploader.destroy(profile.image.public_id)
+            profile.image = None
+
+        if commit:
+            profile.save()
+        return profile
