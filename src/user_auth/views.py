@@ -31,5 +31,6 @@ def edit_profile_image_view(request):
     else:
         # when making changes to an existing object we need to pass that object as instance to the form
         form = ProfileImageForm(instance=profile)
+        
     # rendering request.user.profile instead of the profile variable to show the profile.image directly from the db instead of the bound form
     return render(request, 'profile/edit_profile.html', {'form': form, 'profile': request.user.profile}) 
