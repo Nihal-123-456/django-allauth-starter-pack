@@ -42,6 +42,7 @@ CLOUDINARY_CLOUDNAME=your-cloud-name
 CLOUDINARY_API_KEY=your-cloudinary-api-key
 CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 DEBUG=True
+SITE_ID=site object id (django.contrib.sites)
 ```
 
 ---
@@ -82,7 +83,7 @@ python manage.py createsuperuser
 
 * In Django admin, create a **Site** entry (e.g., `example.com` or `localhost:8000`).
 * Add it to your **Social Application**.
-* Set the correct `SITE_ID` in your `settings.py`.
+* Set the correct `SITE_ID` in your `.env`file.
 
 ---
 
@@ -102,5 +103,3 @@ Your project should now be running at [http://localhost:8000](http://localhost:8
 
 * You can extend social login by adding more providers through Django Allauth.
 * Make sure your `.env` file is **never committed** to Git. Add it to `.gitignore`.
-
-

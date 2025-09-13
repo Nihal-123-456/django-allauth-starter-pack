@@ -180,7 +180,7 @@ SOCIALACCOUNT_FORMS = {
 }
 
 # django allauth settings
-SITE_ID = 2 # site object id (django.contrib.sites) created inside django admin
+SITE_ID = config('SITE_ID', default='1', cast=int) # site object id (django.contrib.sites) created inside django admin
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION ='mandatory' 
