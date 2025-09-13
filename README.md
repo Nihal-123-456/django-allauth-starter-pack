@@ -73,7 +73,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-* After creating a superuser, log in to Django admin and add your **social account credentials**.
+* After creating a superuser, log in to Django admin and add your **social application credentials**.
 * This project has **Google** configured. You can add others (e.g., LinkedIn) by following the [Django Allauth documentation](https://django-allauth.readthedocs.io/).
 
 ---
