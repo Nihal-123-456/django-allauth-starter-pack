@@ -8,8 +8,8 @@ This guide will help you set up and run the project locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repository-url>
-cd <your-repository-folder>
+git clone https://github.com/Nihal-123-456/django-allauth-starter-pack
+cd django-allauth-starter-pack
 ````
 
 ---
