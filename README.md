@@ -68,7 +68,19 @@ python manage.py migrate
 
 ---
 
-### 6. Create a Superuser
+### 6. Run the Server
+
+Start the development server:
+
+```bash
+python manage.py runserver
+```
+
+Your project should now be running at [http://localhost:8000](http://localhost:8000)
+
+---
+
+### 7. Create a Superuser
 
 ```bash
 python manage.py createsuperuser
@@ -79,7 +91,7 @@ python manage.py createsuperuser
 
 ---
 
-### 7. Configure Sites and Social Applications
+### 8. Configure Sites and Social Applications
 
 * In Django admin, create a **Site** entry (e.g., `example.com` or `localhost:8000`).
 * Add it to your **Social Application**.
@@ -87,15 +99,13 @@ python manage.py createsuperuser
 
 ---
 
-## ✅ Run the Server
+### 9. Download the flowbite files
 
-Once everything is configured, start the development server:
+Download the flowbite vendor files for styling
 
 ```bash
-python manage.py runserver
+python manage.py download_vendor
 ```
-
-Your project should now be running at [http://localhost:8000](http://localhost:8000) 🎉
 
 ---
 
